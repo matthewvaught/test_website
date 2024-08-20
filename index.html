@@ -13,7 +13,7 @@ layout: page
 
 <script>
   async function loaded(reader) {
-  const response = await fetch('https://huggingface.co/spaces/matthewvaught/testing/api/predict/', {
+  const response = await fetch('https://matthewvaught-testing.hf.space/api/predict/', {
     method: "POST", 
     body: JSON.stringify({ "data": [reader.result] }),
     headers: { "Content-Type": "application/json" }
