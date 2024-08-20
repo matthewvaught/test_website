@@ -3,20 +3,29 @@ title: Home
 layout: page
 ---
 
-Simple Cat Vs. Dog Classifier
+<h1>Simple Cat Vs. Dog Classifier</h1>
 
+<h2>Input a file here</h2>
 <input id="photo" type="file">
+
+<h2>Here is what the model predicts</h2>
 <div id="results"></div>
+
 <script>
   async function loaded(reader) {
-    const response = await fetch('https://raw.githubusercontent.com/gradio-app/gradio/main/test/test_files/bus.png', {
-      method: "POST", body: JSON.stringify({ "data": [reader.result] }),
-      headers: { "Content-Type": "application/json" }
-    });
-    const json = await response.json();
-    const label = json['data'][0]['confidences'][0]['label'];
-    results.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${label}</p>`
-  }
+  const response = await fetch('https://https://huggingface.co/spaces/matthewvaught/testing/api/predict/', {
+    method: "POST", 
+    body: JSON.stringify({ "data": [reader.result] }),
+    headers: { "Content-Type": "application/json" }
+  });
+  const json = await response.json();
+  const confidences = json['data'][0]['confidences'];
+  let outputHTML = `<br/><img src="${reader.result}" width="300">`;
+  confidences.forEach(conf => {
+    outputHTML += `<p>${conf['label']}: ${conf['confidence'] * 100}%</p>`;
+  });
+  results.innerHTML = outputHTML;
+}
   function read() {
     const reader = new FileReader();
     reader.addEventListener('load', () => loaded(reader))
@@ -24,3 +33,36 @@ Simple Cat Vs. Dog Classifier
   }
   photo.addEventListener('input', read);
 </script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+  
+  #photo {
+    margin-top: 10px;
+  }
+  
+  #results img {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: white;
+  }
+</style>
